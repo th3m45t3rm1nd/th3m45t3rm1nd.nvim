@@ -20,7 +20,7 @@ Kickstart.nvim is a template for your own configuration.
   And then you can explore or search through `:help lua-guide`
 
 
-Kickstart Guide:
+ickstart Guide:
 
 I have left several `:help X` comments throughout the init.lua
 You should run that command and read that help section for more information.
