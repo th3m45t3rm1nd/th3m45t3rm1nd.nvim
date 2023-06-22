@@ -429,7 +429,8 @@ local servers = {
   -- gopls = {},
   -- pyright = {},
   -- rust_analyzer = {},
-  -- tsserver = {},
+  ocamllsp = {},
+  tsserver = {},
 
   lua_ls = {
     Lua = {
