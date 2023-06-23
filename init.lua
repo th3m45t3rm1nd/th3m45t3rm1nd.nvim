@@ -178,7 +178,10 @@ require('lazy').setup({
 -- NOTE: You can change these options as you wish!
 
 -- Set highlight on search
-vim.o.hlsearch = false
+vim.o.hlsearch = true
+
+-- Set highlight current line
+vim.o.cursorline = true
 
 -- Make line numbers default
 vim.wo.number = true
@@ -235,6 +238,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = highlight_group,
   pattern = '*',
 })
+
+-- [[ Keybindings Change Buffer ]]
+vim.keymap.set('n', '<Tab>', ':bnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<S-Tab>', ':bprevious<CR>', { noremap = true, silent = true })
+
+-- [[ Keybinding NvTerm]]
+vim.keymap.set({ 'n', 't' }, '<A-h>', function() require("nvterm.terminal").toggle('horizontal') end,
+  { desc = "Horizontal Terminal" })
+vim.keymap.set({ 'n', 't' }, '<A-v>', function() require("nvterm.terminal").toggle('vertical') end,
+  { desc = "Vertical Terminal" })
+
 
 -- [[ Keybindings NvimTree ]]
 vim.keymap.set('n', '<C-n>', require('nvim-tree.api').tree.toggle, { desc = "Toggle" })
