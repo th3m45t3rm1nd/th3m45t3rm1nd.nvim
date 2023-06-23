@@ -1,15 +1,25 @@
--- Unless you are still migrating, remove the deprecated commands from v1.x
-vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
-
 return {
-  "nvim-neo-tree/neo-tree.nvim",
+  "nvim-tree/nvim-tree.lua",
   version = "*",
   dependencies = {
-    "nvim-lua/plenary.nvim",
-    "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-    "MunifTanjim/nui.nvim",
+    "nvim-tree/nvim-web-devicons",
   },
-  config = function ()
-    require('neo-tree').setup {}
+  config = function()
+    require("nvim-tree").setup {}
+  end,
+  on_attach = function(bufnr)
+    local api = require('nvim-tree.api')
+
+    api.config.mappings.default_on_attach(bufnr)
+
+    local function opts(desc)
+      return {
+        desc = "NvimTree " .. desc,
+        buffer = bufnr,
+        noremap = true,
+        silent = true,
+        nowait = true,
+      }
+    end
   end,
 }
