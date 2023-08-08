@@ -58,6 +58,14 @@ require('lazy').setup({
     },
   },
 
+  --[[ {
+    'jose-elias-alvarez/null-ls.nvim'
+  },
+
+  {
+    'MunifTanjim/prettier.nvim'
+  }, ]]
+
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -99,10 +107,49 @@ require('lazy').setup({
 
   {
     -- Theme inspired by Atom
-    'rebelot/kanagawa.nvim',
+    'navarasu/onedark.nvim',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'kanagawa'
+      require('onedark').setup {
+        style = 'dark',
+        -- Main options --
+        transparent = false,          -- Show/hide background
+        term_colors = true,           -- Change terminal color as per the selected theme style
+        ending_tildes = false,        -- Show the end-of-buffer tildes. By default they are hidden
+        cmp_itemkind_reverse = false, -- reverse item kind highlights in cmp menu
+
+        -- toggle theme style ---
+        toggle_style_key = nil,                                                              -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
+        toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }, -- List of styles to toggle between
+
+        -- Change code style ---
+        -- Options are italic, bold, underline, none
+        -- You can configure multiple style with comma separated, For e.g., keywords = 'italic,bold'
+        code_style = {
+          comments = 'italic',
+          keywords = 'bold',
+          functions = 'italic,bold',
+          strings = 'none',
+          variables = 'none'
+        },
+
+        -- Lualine options --
+        lualine = {
+          transparent = false, -- lualine center bar transparency
+        },
+
+        -- Custom Highlights --
+        colors = {},     -- Override default colors
+        highlights = {}, -- Override highlight groups
+
+        -- Plugins Config --
+        diagnostics = {
+          darker = true,     -- darker colors for diagnostic
+          undercurl = true,  -- use undercurl instead of underline for diagnostics
+          background = true, -- use background color for virtual text
+        },
+      }
+      require('onedark').load()
     end,
   },
 
@@ -113,9 +160,12 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = true,
-        theme = 'kanagawa',
+        theme = 'onedark',
         component_separators = '|',
         section_separators = '',
+        disabled_filetypes = {
+          'NvimTree',
+        },
       },
     },
   },
@@ -240,8 +290,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- [[ Keybindings Change Buffer ]]
-vim.keymap.set('n', '<Tab>', ':bnext<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<S-Tab>', ':bprevious<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<Tab>', ':bnext<CR>', { desc = "Goto Next Buffer", noremap = true, silent = true })
+vim.keymap.set('n', '<S-Tab>', ':bprevious<CR>', { desc = "Goto Previous Buffer", noremap = true, silent = true })
+vim.keymap.set('n', '<leader>x', ':bdelete<CR>', { desc = "Delete Buffer", noremap = true, silent = true })
 
 -- [[ Keybinding NvTerm]]
 vim.keymap.set({ 'n', 't' }, '<A-h>', function() require("nvterm.terminal").toggle('horizontal') end,
@@ -254,8 +305,9 @@ vim.keymap.set({ 'n', 't' }, '<A-v>', function() require("nvterm.terminal").togg
 vim.keymap.set('n', '<C-n>', require('nvim-tree.api').tree.toggle, { desc = "Toggle" })
 vim.keymap.set('n', '<leader>n', require('nvim-tree.api').tree.focus, { desc = "Focus" })
 
+
 -- [[ Configure Kanagawa ]]
-require('kanagawa').setup({
+--[[ require('kanagawa').setup({
   compile = false,  -- enable compiling the colorscheme
   undercurl = true, -- enable undercurls
   commentStyle = { italic = true },
@@ -273,12 +325,12 @@ require('kanagawa').setup({
   overrides = function(colors) -- add/modify highlights
     return {}
   end,
-  theme = "dragon",  -- Load "wave" theme when 'background' option is not set
-  background = {     -- map the value of 'background' option to a theme
-    dark = "dragon", -- try "dragon" !
+  theme = "wave",  -- Load "wave" theme when 'background' option is not set
+  background = {   -- map the value of 'background' option to a theme
+    dark = "wave", -- try "dragon" !
     light = "lotus"
   },
-})
+}) ]]
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
@@ -318,7 +370,8 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim', 'astro',
+    'javascript', 'ocaml', 'html', 'css' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
@@ -439,13 +492,16 @@ end
 local servers = {
   -- clangd = {},
   -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
+  pyright = {},
+  rust_analyzer = {},
   html = {},
   cssmodules_ls = {},
   cssls = {},
   ocamllsp = {},
+  astro = {},
+  unocss = {},
   tsserver = {},
+  custom_elements_ls = {},
 
   lua_ls = {
     Lua = {
